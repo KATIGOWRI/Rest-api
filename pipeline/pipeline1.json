@@ -92,6 +92,8 @@
 			{
 				"name": "ds_github_vadlidation",
 				"type": "Validation",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
@@ -102,6 +104,25 @@
 					"timeout": "0.12:00:00",
 					"sleep": 10
 				}
+			},
+			{
+				"name": "Web_github_con",
+				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://github.com/anshlambagit/Netflix_Azure_Data_Engineering_Project/tree/main/RawData_AND_Notebooks"
+				}
 			}
 		],
 		"parameters": {
@@ -110,19 +131,35 @@
 				"defaultValue": [
 					{
 						"folder_name": "netflix_cast",
-						"file_name": "netflix_cast.csv"
+						"files": [
+							{
+								"file_name": "netflix_cast.csv"
+							}
+						]
 					},
 					{
 						"folder_name": "netflix_category",
-						"file_name": "netflix_category.csv"
+						"files": [
+							{
+								"file_name": "netflix_category.csv"
+							}
+						]
 					},
 					{
 						"folder_name": "netflix_countries",
-						"file_name": "netflix_countries.csv"
+						"files": [
+							{
+								"file_name": "netflix_countries.csv"
+							}
+						]
 					},
 					{
 						"folder_name": "netflix_directors",
-						"file_name": "netflix_directors.csv"
+						"files": [
+							{
+								"file_name": "netflix_directors.csv"
+							}
+						]
 					}
 				]
 			}
