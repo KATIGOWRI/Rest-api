@@ -1,0 +1,9 @@
+{
+	"name": "adf-netfilx",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "eed803a3-00f4-43c7-b4e8-0e1e3e95e57b",
+		"tenantId": "deacd5c8-ec16-40ad-bc1d-7245b95e70d9"
+	}
+}
