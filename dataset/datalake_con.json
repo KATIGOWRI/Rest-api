@@ -2,14 +2,14 @@
 	"name": "datalake_con",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "datalake_con",
+			"referenceName": "AzureDataLakeStorage1",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"folder_path": {
+			"folder_name": {
 				"type": "string"
 			},
-			"file_path": {
+			"file_name": {
 				"type": "string"
 			}
 		},
@@ -18,6 +18,14 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().file_name",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folder_name",
+					"type": "Expression"
+				},
 				"fileSystem": "bronze"
 			},
 			"columnDelimiter": ",",

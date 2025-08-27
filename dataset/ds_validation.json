@@ -1,10 +1,6 @@
 {
 	"name": "ds_validation",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "datalake_con",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {

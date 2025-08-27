@@ -3,93 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "For_all_files",
-				"type": "ForEach",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@pipeline().parameters.p_array",
-						"type": "Expression"
-					},
-					"activities": [
-						{
-							"name": "copy_for_apigit",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "DelimitedTextSource",
-									"storeSettings": {
-										"type": "HttpReadSettings",
-										"requestMethod": "GET"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
-									}
-								},
-								"sink": {
-									"type": "DelimitedTextSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ".txt"
-									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
-							},
-							"inputs": [
-								{
-									"referenceName": "git_files_con",
-									"type": "DatasetReference",
-									"parameters": {
-										"file_name": {
-											"value": "@item().file_name",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "datalake_con",
-									"type": "DatasetReference",
-									"parameters": {
-										"folder_path": {
-											"value": "@item().folder_name",
-											"type": "Expression"
-										},
-										"file_path": {
-											"value": "@item().file_name",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						}
-					]
-				}
-			},
-			{
 				"name": "ds_github_vadlidation",
 				"type": "Validation",
 				"state": "Inactive",
@@ -131,35 +44,19 @@
 				"defaultValue": [
 					{
 						"folder_name": "netflix_cast",
-						"files": [
-							{
-								"file_name": "netflix_cast.csv"
-							}
-						]
+						"file_name": "netflix_cast.csv"
 					},
 					{
 						"folder_name": "netflix_category",
-						"files": [
-							{
-								"file_name": "netflix_category.csv"
-							}
-						]
+						"file_name": "netflix_category.csv"
 					},
 					{
 						"folder_name": "netflix_countries",
-						"files": [
-							{
-								"file_name": "netflix_countries.csv"
-							}
-						]
+						"file_name": "netflix_countries.csv"
 					},
 					{
 						"folder_name": "netflix_directors",
-						"files": [
-							{
-								"file_name": "netflix_directors.csv"
-							}
-						]
+						"file_name": "netflix_directors.csv"
 					}
 				]
 			}
