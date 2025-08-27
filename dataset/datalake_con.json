@@ -5,6 +5,14 @@
 			"referenceName": "datalake_con",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"folder_path": {
+				"type": "string"
+			},
+			"file_path": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
