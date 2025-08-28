@@ -1,15 +1,15 @@
 {
-	"name": "datalake_con",
+	"name": "ds_sink",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "data_form_web",
+			"referenceName": "ds_sink",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"folder_name": {
+			"file_name": {
 				"type": "string"
 			},
-			"file_name": {
+			"folder_name": {
 				"type": "string"
 			}
 		},
@@ -18,6 +18,14 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().file_name",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folder_name",
+					"type": "Expression"
+				},
 				"fileSystem": "bronze"
 			},
 			"columnDelimiter": ",",

@@ -1,8 +1,8 @@
 {
-	"name": "ds_validation",
+	"name": "web_sink",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ds_validation",
+			"referenceName": "data_form_web",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
@@ -10,14 +10,22 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "netflix_titles.csv",
-				"fileSystem": "raw"
+				"fileSystem": "bronze"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "cast",
+				"type": "String"
+			},
+			{
+				"name": "show_id",
+				"type": "String"
+			}
+		]
 	}
 }
