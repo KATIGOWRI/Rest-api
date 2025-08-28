@@ -7,17 +7,33 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-netfilx"
 		},
-		"datalake_con_accountKey": {
+		"data_form_web_accountKey": {
 			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'datalake_con'"
+			"metadata": "Secure string for 'accountKey' of 'data_form_web'"
 		},
-		"datalake_con_properties_typeProperties_url": {
+		"ds_sink_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ds_sink'"
+		},
+		"ds_validation_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ds_validation'"
+		},
+		"HttpServer_github_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com"
+		},
+		"data_form_web_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://scnetflixprojectdatalake.dfs.core.windows.net/"
 		},
-		"git_con_properties_typeProperties_url": {
+		"ds_sink_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://raw.githubusercontent.com/"
+			"defaultValue": "https://scnetflixprojectdatalake.dfs.core.windows.net/"
+		},
+		"ds_validation_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://scnetflixprojectdatalake.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -46,14 +62,26 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"datalake_con_accountKey": {
-						"value": "[parameters('datalake_con_accountKey')]"
+					"data_form_web_accountKey": {
+						"value": "[parameters('data_form_web_accountKey')]"
 					},
-					"datalake_con_properties_typeProperties_url": {
-						"value": "[parameters('datalake_con_properties_typeProperties_url')]"
+					"ds_sink_accountKey": {
+						"value": "[parameters('ds_sink_accountKey')]"
 					},
-					"git_con_properties_typeProperties_url": {
-						"value": "[parameters('git_con_properties_typeProperties_url')]"
+					"ds_validation_accountKey": {
+						"value": "[parameters('ds_validation_accountKey')]"
+					},
+					"HttpServer_github_properties_typeProperties_url": {
+						"value": "[parameters('HttpServer_github_properties_typeProperties_url')]"
+					},
+					"data_form_web_properties_typeProperties_url": {
+						"value": "[parameters('data_form_web_properties_typeProperties_url')]"
+					},
+					"ds_sink_properties_typeProperties_url": {
+						"value": "[parameters('ds_sink_properties_typeProperties_url')]"
+					},
+					"ds_validation_properties_typeProperties_url": {
+						"value": "[parameters('ds_validation_properties_typeProperties_url')]"
 					}
 				}
 			},

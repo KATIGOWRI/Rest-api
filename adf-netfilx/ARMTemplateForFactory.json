@@ -7,17 +7,33 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-netfilx"
 		},
-		"datalake_con_accountKey": {
+		"data_form_web_accountKey": {
 			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'datalake_con'"
+			"metadata": "Secure string for 'accountKey' of 'data_form_web'"
 		},
-		"datalake_con_properties_typeProperties_url": {
+		"ds_sink_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ds_sink'"
+		},
+		"ds_validation_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ds_validation'"
+		},
+		"HttpServer_github_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com"
+		},
+		"data_form_web_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://scnetflixprojectdatalake.dfs.core.windows.net/"
 		},
-		"git_con_properties_typeProperties_url": {
+		"ds_sink_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://raw.githubusercontent.com/"
+			"defaultValue": "https://scnetflixprojectdatalake.dfs.core.windows.net/"
+		},
+		"ds_validation_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://scnetflixprojectdatalake.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -31,9 +47,56 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "For_all_files",
-						"type": "ForEach",
+						"name": "ds_github_vadlidation",
+						"type": "Validation",
+						"dependsOn": [
+							{
+								"activity": "variable",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_validation",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"timeout": "0.12:00:00",
+							"sleep": 10
+						}
+					},
+					{
+						"name": "Web_github_con",
+						"type": "WebActivity",
 						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://raw.githubusercontent.com/anshlambagit/Netflix_Azure_Data_Engineering_Project/refs/heads/main/RawData_AND_Notebooks/netflix_cast.csv"
+						}
+					},
+					{
+						"name": "for_all-files",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "ds_github_vadlidation",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
@@ -42,7 +105,7 @@
 							},
 							"activities": [
 								{
-									"name": "copy_for_apigit",
+									"name": "copy_form_github_api",
 									"type": "Copy",
 									"dependsOn": [],
 									"policy": {
@@ -87,7 +150,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "git_files_con",
+											"referenceName": "github_con",
 											"type": "DatasetReference",
 											"parameters": {
 												"file_name": {
@@ -99,15 +162,15 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "datalake_con",
+											"referenceName": "ds_sink",
 											"type": "DatasetReference",
 											"parameters": {
-												"folder_path": {
-													"value": "@item().folder_name",
+												"file_name": {
+													"value": "@item().file_name",
 													"type": "Expression"
 												},
-												"file_path": {
-													"value": "@item().file_name",
+												"folder_name": {
+													"value": "@item().folder_name",
 													"type": "Expression"
 												}
 											}
@@ -115,6 +178,30 @@
 									]
 								}
 							]
+						}
+					},
+					{
+						"name": "variable",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Web_github_con",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "web-github-conn",
+							"value": {
+								"value": "@string(activity('Web_github_con').output.Response)\n",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -144,11 +231,17 @@
 						]
 					}
 				},
+				"variables": {
+					"web-github-conn": {
+						"type": "String"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/git_files_con')]",
-				"[concat(variables('factoryId'), '/datasets/datalake_con')]"
+				"[concat(variables('factoryId'), '/datasets/ds_validation')]",
+				"[concat(variables('factoryId'), '/datasets/github_con')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sink')]"
 			]
 		},
 		{
@@ -157,14 +250,14 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "datalake_con",
+					"referenceName": "data_form_web",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"folder_path": {
+					"folder_name": {
 						"type": "string"
 					},
-					"file_path": {
+					"file_name": {
 						"type": "string"
 					}
 				},
@@ -183,7 +276,78 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/datalake_con')]"
+				"[concat(variables('factoryId'), '/linkedServices/data_form_web')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ds_sink",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"file_name": {
+						"type": "string"
+					},
+					"folder_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": "bronze"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ds_sink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_validation')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ds_validation",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "netflix_titles.csv",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ds_validation')]"
 			]
 		},
 		{
@@ -192,7 +356,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "git_con",
+					"referenceName": "HttpServer_github",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -218,37 +382,142 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/git_con')]"
+				"[concat(variables('factoryId'), '/linkedServices/HttpServer_github')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/datalake_con')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/github_con')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('datalake_con_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('datalake_con_accountKey')]"
+				"linkedServiceName": {
+					"referenceName": "HttpServer_github",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"file_name": {
+						"type": "string"
 					}
-				}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": {
+							"value": "anshlambagit/Netflix_Azure_Data_Engineering_Project/refs/heads/main/RawData_AND_Notebooks/@{dataset().file_name}",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/HttpServer_github')]"
+			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/git_con')]",
+			"name": "[concat(parameters('factoryName'), '/web_sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "data_form_web",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "bronze"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "cast",
+						"type": "String"
+					},
+					{
+						"name": "show_id",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/data_form_web')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HttpServer_github')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
 				"type": "HttpServer",
 				"typeProperties": {
-					"url": "[parameters('git_con_properties_typeProperties_url')]",
+					"url": "[parameters('HttpServer_github_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/data_form_web')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('data_form_web_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('data_form_web_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sink')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ds_sink_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ds_sink_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_validation')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ds_validation_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ds_validation_accountKey')]"
+					}
 				}
 			},
 			"dependsOn": []

@@ -5,14 +5,26 @@
 		"factoryName": {
 			"value": "adf-netfilx"
 		},
-		"datalake_con_accountKey": {
+		"data_form_web_accountKey": {
 			"value": ""
 		},
-		"datalake_con_properties_typeProperties_url": {
+		"ds_sink_accountKey": {
+			"value": ""
+		},
+		"ds_validation_accountKey": {
+			"value": ""
+		},
+		"HttpServer_github_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com"
+		},
+		"data_form_web_properties_typeProperties_url": {
 			"value": "https://scnetflixprojectdatalake.dfs.core.windows.net/"
 		},
-		"git_con_properties_typeProperties_url": {
-			"value": "https://raw.githubusercontent.com/"
+		"ds_sink_properties_typeProperties_url": {
+			"value": "https://scnetflixprojectdatalake.dfs.core.windows.net/"
+		},
+		"ds_validation_properties_typeProperties_url": {
+			"value": "https://scnetflixprojectdatalake.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""
