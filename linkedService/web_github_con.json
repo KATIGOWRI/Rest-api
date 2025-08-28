@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "WebConnection",
 		"typeProperties": {
-			"url": "https://github.com/anshlambagit/Netflix_Azure_Data_Engineering_Project/tree/main/RawData_AND_Notebooks/netflix.title.csv",
+			"url": "https://github.com/anshlambagit/Netflix_Azure_Data_Engineering_Project/tree/main/RawData_AND_Notebooks/netflix_titles.csv",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
